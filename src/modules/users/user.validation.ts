@@ -1,0 +1,35 @@
+import { z } from 'zod';
+
+// Zod schemas for validation
+const orderValidationSchema = z.object({
+  productName: z.string().min(1, 'required field'),
+  price: z.number().min(1, 'required field'),
+  quantity: z.number().min(1, 'required field'),
+});
+
+const userValidationSchema = z.object({
+  userId: z.number().min(1, 'required field'),
+  username: z.string().min(6, 'User name minimum length 6 characters.'),
+  password: z
+    .string()
+    .min(8)
+    .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]+$/),
+  fullName: z.object({
+    firstName: z.string().min(3, 'First Name length at least 3 characters'),
+    lastName: z.string().min(3, 'First Name length at least 3 characters'),
+  }),
+  age: z.number().min(1, 'required field'),
+  email: z.string().email({ message: 'Not a valid email.' }),
+  isActive: z.boolean(),
+  hobbies: z.array(z.string()).nonempty({
+    message: 'At least a hobby!',
+  }),
+  address: z.object({
+    street: z.string().min(1, 'required field'),
+    city: z.string().min(1, 'required field'),
+    country: z.string().min(1, 'required field'),
+  }),
+  orders: z.array(orderValidationSchema).optional(),
+});
+
+export default userValidationSchema;
