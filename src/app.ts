@@ -23,11 +23,19 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({
       success: false,
       message: error.message,
+      error: {
+        code: 500,
+        description: error.name,
+      },
     });
   } else if (error.message == 'Your requested content was not found.') {
     res.status(404).json({
       success: false,
       message: 'Your requested content was not found.',
+      error: {
+        code: 404,
+        description: error.name,
+      },
     });
   }
 });

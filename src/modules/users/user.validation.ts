@@ -18,16 +18,16 @@ const userValidationSchema = z.object({
     firstName: z.string().min(3, 'First Name length at least 3 characters'),
     lastName: z.string().min(3, 'First Name length at least 3 characters'),
   }),
-  age: z.number().min(1, 'required field'),
+  age: z.number().min(1),
   email: z.string().email({ message: 'Not a valid email.' }),
   isActive: z.boolean(),
   hobbies: z.array(z.string()).nonempty({
     message: 'At least a hobby!',
   }),
   address: z.object({
-    street: z.string().min(1, 'required field'),
-    city: z.string().min(1, 'required field'),
-    country: z.string().min(1, 'required field'),
+    street: z.string().min(1),
+    city: z.string().min(1),
+    country: z.string().min(1),
   }),
   orders: z.array(orderValidationSchema).optional(),
 });
