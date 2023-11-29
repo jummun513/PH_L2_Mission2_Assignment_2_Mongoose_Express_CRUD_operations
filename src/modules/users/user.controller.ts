@@ -100,8 +100,44 @@ const getSingleUser = async (req: Request, res: Response) => {
   }
 };
 
+const updateSingleUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await UserServices.updateSingleUserFromDB(userId, req.body);
+    if (result) {
+      const { password, orders, _id, __v, ...rest } = result.toObject();
+      res.status(200).json({
+        success: true,
+        message: 'User updated successfully!',
+        data: rest,
+      });
+    }
+  } catch (error: any) {
+    if (error.stringValue == '"NaN"') {
+      res.json({
+        success: false,
+        message: 'User Id must be number',
+        error: {
+          code: 500,
+          description: error.name,
+        },
+      });
+    } else {
+      res.json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
+    }
+  }
+};
+
 export const UserController = {
   createUser,
   getUsers,
   getSingleUser,
+  updateSingleUser,
 };
