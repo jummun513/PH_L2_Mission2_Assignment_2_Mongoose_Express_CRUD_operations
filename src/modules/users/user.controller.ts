@@ -116,7 +116,19 @@ const updateSingleUser = async (req: Request, res: Response) => {
       });
     }
   } catch (error: any) {
-    if (error.stringValue == '"NaN"') {
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+      // for catch unique property related error
+      res.json({
+        success: false,
+        message: `Given ${
+          Object.getOwnPropertyNames(error.keyPattern)[0]
+        } already exists, give unique.`,
+        error: {
+          code: 500,
+          description: error.name,
+        },
+      });
+    } else if (error.stringValue == '"NaN"') {
       res.json({
         success: false,
         message: 'User Id must be number',
