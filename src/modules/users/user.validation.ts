@@ -30,7 +30,7 @@ const userValidationSchema = z.object({
     country: z.string().min(1),
   }),
   orders: z.array(orderValidationSchema).optional(),
-  isDeleted: z.boolean().optional(),
+  isDeleted: z.boolean().default(false),
 });
 
 export default userValidationSchema;
