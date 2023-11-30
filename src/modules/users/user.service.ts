@@ -1,5 +1,5 @@
 import UserModel from '../user.model';
-import { TUser } from './user.interface';
+import { TOrder, TUser } from './user.interface';
 
 const createUserInDB = async (userData: TUser) => {
   const user = new UserModel(userData);
@@ -54,10 +54,24 @@ const deleteSingleUserFromDB = async (userId: string) => {
   }
 };
 
+const orderAddIntoDB = async (userId: string, product: TOrder) => {
+  const id = parseInt(userId);
+  const filter = await UserModel.findOne({ userId: id });
+
+  if (await filter?.isUserExists(id)) {
+    filter?.orders?.push(product);
+    await filter?.save();
+    return null;
+  } else {
+    throw new Error('User not found');
+  }
+};
+
 export const UserServices = {
   createUserInDB,
   getUsersFromDB,
   getSingleUserFromDB,
   updateSingleUserFromDB,
   deleteSingleUserFromDB,
+  orderAddIntoDB,
 };

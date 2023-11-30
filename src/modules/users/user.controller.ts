@@ -170,10 +170,121 @@ const deleteSingleUser = async (req: Request, res: Response) => {
   }
 };
 
+const orderAdd = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await UserServices.orderAddIntoDB(userId, req.body);
+    res.status(200).json({
+      success: true,
+      message: 'Order created successfully!',
+      data: result,
+    });
+  } catch (error: any) {
+    if (error.stringValue == '"NaN"') {
+      res.json({
+        success: false,
+        message: 'User Id must be number',
+        error: {
+          code: 500,
+          description: error.name,
+        },
+      });
+    } else {
+      res.json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
+    }
+  }
+};
+
+const getAllOrder = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await UserServices.getSingleUserFromDB(userId);
+
+    if (result) {
+      const { orders, ...rest } = result.toObject();
+      res.status(200).json({
+        success: true,
+        message: 'Order fetched successfully!',
+        data: { orders: orders },
+      });
+    }
+  } catch (error: any) {
+    if (error.stringValue == '"NaN"') {
+      res.json({
+        success: false,
+        message: 'User Id must be number',
+        error: {
+          code: 500,
+          description: error.name,
+        },
+      });
+    } else {
+      res.json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
+    }
+  }
+};
+
+const totalOrderPrice = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await UserServices.getSingleUserFromDB(userId);
+
+    if (result) {
+      // Calculate total price
+      const totalPrice = result?.orders?.reduce((sum, order) => {
+        return sum + Number(order.price) * Number(order.quantity);
+      }, 0);
+
+      res.status(200).json({
+        success: true,
+        message: 'Order fetched successfully!',
+        data: { totalPrice: totalPrice },
+      });
+    }
+  } catch (error: any) {
+    if (error.stringValue == '"NaN"') {
+      res.json({
+        success: false,
+        message: 'User Id must be number',
+        error: {
+          code: 500,
+          description: error.name,
+        },
+      });
+    } else {
+      res.json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
+    }
+  }
+};
+
 export const UserController = {
   createUser,
   getUsers,
   getSingleUser,
   updateSingleUser,
   deleteSingleUser,
+  orderAdd,
+  getAllOrder,
+  totalOrderPrice,
 };
