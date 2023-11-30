@@ -24,10 +24,11 @@ export type TUser = {
     country: string;
   };
   orders?: TOrder[];
+  isDeleted: boolean;
 };
 
 export type UserMethod = {
   isUserExists(userId: number): Promise<TUser | null>;
 };
 
-export type UserModel = Model<TUser, Record<string, never>, UserMethod>;
+export type User = Model<TUser, Record<string, never>, UserMethod>;

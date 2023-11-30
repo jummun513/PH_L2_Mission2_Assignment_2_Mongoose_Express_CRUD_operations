@@ -8,6 +8,7 @@ app.use(express.json());
 // application routes
 app.use('/api/users', UserRoutes);
 
+// base routes
 app.get('/', (req: Request, res: Response) => {
   res.send('Assignment - 2, server is running.');
 });
@@ -23,10 +24,6 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({
       success: false,
       message: error.message,
-      error: {
-        code: 500,
-        description: error.name,
-      },
     });
   } else if (error.message == 'Your requested content was not found.') {
     res.status(404).json({
@@ -34,7 +31,7 @@ app.use((error: any, req: Request, res: Response, next: NextFunction) => {
       message: 'Your requested content was not found.',
       error: {
         code: 404,
-        description: error.name,
+        description: 'Not found',
       },
     });
   }

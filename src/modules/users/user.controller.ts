@@ -5,9 +5,10 @@ import userValidationSchema from './user.validation';
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = req.body;
-    const zoiValidateData = userValidationSchema.parse(data);
-    const result = await UserServices.createUserInDB(zoiValidateData);
-    const { password, orders, _id, __v, ...rest } = result.toObject();
+    const zodValidateData = userValidationSchema.parse(data);
+    const result = await UserServices.createUserInDB(zodValidateData);
+    const { password, orders, _id, __v, isDeleted, ...rest } =
+      result.toObject();
 
     res.status(200).json({
       success: true,
@@ -70,7 +71,8 @@ const getSingleUser = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const result = await UserServices.getSingleUserFromDB(userId);
     if (result) {
-      const { password, orders, _id, __v, ...rest } = result.toObject();
+      const { password, orders, _id, __v, isDeleted, ...rest } =
+        result.toObject();
       res.status(200).json({
         success: true,
         message: 'User fetched successfully!',
@@ -105,7 +107,8 @@ const updateSingleUser = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const result = await UserServices.updateSingleUserFromDB(userId, req.body);
     if (result) {
-      const { password, orders, _id, __v, ...rest } = result.toObject();
+      const { password, orders, _id, __v, isDeleted, ...rest } =
+        result.toObject();
       res.status(200).json({
         success: true,
         message: 'User updated successfully!',

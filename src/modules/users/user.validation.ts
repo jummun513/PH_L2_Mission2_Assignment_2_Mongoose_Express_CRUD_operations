@@ -12,8 +12,8 @@ const userValidationSchema = z.object({
   username: z.string().min(6, 'User name minimum length 6 characters.'),
   password: z
     .string()
-    .min(8)
-    .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]+$/),
+    .min(8, 'Password minimum length 8 characters')
+    .regex(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]+$/, 'Invalid password'),
   fullName: z.object({
     firstName: z.string().min(3, 'First Name length at least 3 characters'),
     lastName: z.string().min(3, 'First Name length at least 3 characters'),
@@ -30,6 +30,7 @@ const userValidationSchema = z.object({
     country: z.string().min(1),
   }),
   orders: z.array(orderValidationSchema).optional(),
+  isDeleted: z.boolean().optional(),
 });
 
 export default userValidationSchema;

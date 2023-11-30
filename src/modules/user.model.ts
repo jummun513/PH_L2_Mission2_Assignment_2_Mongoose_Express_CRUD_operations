@@ -1,5 +1,7 @@
 import { Schema, model } from 'mongoose';
-import { TOrder, TUser, UserMethod, UserModel } from './users/user.interface';
+import { TOrder, TUser, User } from './users/user.interface';
+import bcrypt from 'bcrypt';
+import config from '../config';
 
 const orderSchema = new Schema<TOrder>({
   productName: { type: String, required: true },
@@ -7,7 +9,7 @@ const orderSchema = new Schema<TOrder>({
   quantity: { type: Number, required: true },
 });
 
-const userSchema = new Schema<TUser, UserModel, UserMethod>({
+const userSchema = new Schema<TUser>({
   userId: {
     type: Number,
     required: true,
@@ -21,7 +23,7 @@ const userSchema = new Schema<TUser, UserModel, UserMethod>({
   },
   age: { type: Number, required: true },
   email: { type: String, required: true, unique: true },
-  isActive: { type: Boolean, required: true },
+  isActive: { type: Boolean, required: true, default: true },
   hobbies: [{ type: String, required: true }],
   address: {
     street: { type: String, required: true },
@@ -29,13 +31,24 @@ const userSchema = new Schema<TUser, UserModel, UserMethod>({
     country: { type: String, required: true },
   },
   orders: [orderSchema],
+  isDeleted: { type: Boolean, default: false, required: true },
+});
+
+userSchema.pre('save', async function (next) {
+  const user = this;
+  // hashing password and before save to DB
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.bcrypt_salt_rounds),
+  );
+  next();
 });
 
 userSchema.methods.isUserExists = async function name(userId: number) {
-  const existingUser = await User.findOne({ userId });
+  const existingUser = await UserModel.findOne({ userId });
   return existingUser;
 };
 
-const User = model<TUser, UserModel>('User', userSchema);
+const UserModel = model<TUser, User>('User', userSchema);
 
-export default User;
+export default UserModel;
