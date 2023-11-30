@@ -34,6 +34,7 @@ const userSchema = new Schema<TUser>({
   isDeleted: { type: Boolean, default: false, required: true },
 });
 
+// mongoose document middleware
 userSchema.pre('save', async function (next) {
   const user = this;
   // hashing password and before save to DB
@@ -44,6 +45,24 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+// mongoose query middleware
+userSchema.pre('find', async function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+userSchema.pre('findOne', async function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+// mongoose aggregate middleware
+// userSchema.pre('aggregate', async function (next) {
+//   this.pipeline.unshift({ $match: { isDeleted: { $ne: true } } });
+//   next();
+// });
+
+// mongoose instance method for check user is exist or not
 userSchema.methods.isUserExists = async function name(userId: number) {
   const existingUser = await UserModel.findOne({ userId });
   return existingUser;

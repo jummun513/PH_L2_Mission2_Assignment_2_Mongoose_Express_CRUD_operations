@@ -42,9 +42,22 @@ const updateSingleUserFromDB = async (userId: string, data: object) => {
   }
 };
 
+const deleteSingleUserFromDB = async (userId: string) => {
+  const id = parseInt(userId);
+  const filter = await UserModel.findOne({ userId: id });
+
+  if (await filter?.isUserExists(id)) {
+    await UserModel.updateOne({ userId: id }, { isDeleted: true });
+    return null;
+  } else {
+    throw new Error('User not found');
+  }
+};
+
 export const UserServices = {
   createUserInDB,
   getUsersFromDB,
   getSingleUserFromDB,
   updateSingleUserFromDB,
+  deleteSingleUserFromDB,
 };
