@@ -1,11 +1,9 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
 import { UserRoutes } from './modules/users/user.route';
-import cors from 'cors';
 const app: Application = express();
 
 // parsers
 app.use(express.json());
-app.use(cors());
 
 // application routes
 app.use('/api/users', UserRoutes);

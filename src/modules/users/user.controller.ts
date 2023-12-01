@@ -7,7 +7,8 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     const data = req.body;
     const zodValidateData = userValidationSchema.parse(data);
     const result = await UserServices.createUserInDB(zodValidateData);
-    const { password, orders, _id, isDeleted, ...rest } = result.toObject();
+    const { password, orders, _id, isDeleted, __v, ...rest } =
+      result.toObject();
 
     res.status(200).json({
       success: true,
@@ -70,7 +71,8 @@ const getSingleUser = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const result = await UserServices.getSingleUserFromDB(userId);
     if (result) {
-      const { password, orders, _id, isDeleted, ...rest } = result.toObject();
+      const { password, orders, _id, isDeleted, __v, ...rest } =
+        result.toObject();
       res.status(200).json({
         success: true,
         message: 'User fetched successfully!',
@@ -105,7 +107,8 @@ const updateSingleUser = async (req: Request, res: Response) => {
     const { userId } = req.params;
     const result = await UserServices.updateSingleUserFromDB(userId, req.body);
     if (result) {
-      const { password, orders, _id, isDeleted, ...rest } = result.toObject();
+      const { password, orders, _id, isDeleted, __v, ...rest } =
+        result.toObject();
       res.status(200).json({
         success: true,
         message: 'User updated successfully!',
